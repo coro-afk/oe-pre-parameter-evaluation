@@ -1,7 +1,7 @@
-# oePRE Parameter Evaluation
+# OE-PRE Parameter Evaluation
 
 This repository contains the reproducibility artifact for the concrete parameter
-selection and underlying lattice-security evaluation reported in the oePRE manuscript.
+selection and underlying lattice-security evaluation reported in the OE-PRE manuscript.
 
 It reproduces the numerical results in Section 3.4 and Appendix C, including:
 
@@ -38,7 +38,7 @@ decomposition, additions, PRF evaluation and sampling; they are not measured tim
   Activate that Sage environment before running the commands below.
 
 The bundled results were recomputed with this Sage/Python combination and include
-all 20 attack outputs (eight validation and twelve oePRE), including the raw cost
+all 20 attack outputs (eight validation and twelve OE-PRE), including the raw cost
 dictionaries. Parameter generation was also
 checked with Python 3.12.3.
 
@@ -70,7 +70,7 @@ sage -python scripts/run_fhe_evaluation.py
 
 The FHE runner uses four worker processes by default (`--jobs 1` runs serially).
 It first reproduces the two Table 5.2 boundary points, then evaluates the three
-oePRE inputs only if validation passes. To run just the validation:
+OE-PRE inputs only if validation passes. To run just the validation:
 
 ```sh
 sage -python scripts/run_fhe_evaluation.py --validation-only --output external/table52_validation.json
@@ -101,7 +101,7 @@ its full-table driver, and calls its four classical ternary routines unchanged:
 It retains classical MATZOV reduction costs, the pinned GSA shape defaults,
 attack-specific success settings, and unlimited samples (`m=oo`).
 
-Actual oePRE rows use `n=d`, the exact prime `q`, `ND.Uniform(-1,1)` secrets and
+Actual OE-PRE rows use `n=d`, the exact prime `q`, `ND.Uniform(-1,1)` secrets and
 `ND.DiscreteGaussian(9/sqrt(2*pi))` errors. The input sigma is evaluated with
 Sage's 128-bit real field; the estimator's stored sigma is recorded separately.
 The largest supported category among 128, 192 and 256 is derived using the
@@ -111,7 +111,7 @@ margin above Category 128.
 **Table 5.2 validation uses different error inputs:** ternary `n=1024`,
 `sigma=3.19`, and `q=2^26` / `2^27`. Its minima are 131.332683 / 126.193727,
 confirming the published largest integer `log2(q)=26` at Category 128.
-Those rows are not oePRE parameter sets.
+Those rows are not OE-PRE parameter sets.
 
 ## Scope
 
@@ -128,7 +128,7 @@ benchmark the cryptosystem.
 
 ## Provenance
 
-This artifact accompanies the oePRE manuscript and directly implements the fixed
+This artifact accompanies the OE-PRE manuscript and directly implements the fixed
 parameterization and conservative numerical formulas in Section 3.4 and Appendix C.
 The FHE evaluation uses the pinned official pipeline definitions. The MIT license
 applies to this artifact; external dependencies retain their upstream licenses.
