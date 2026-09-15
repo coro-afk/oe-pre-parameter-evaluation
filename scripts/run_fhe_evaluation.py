@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate exact oePRE inputs with the pinned FHE Guidelines definitions under Sage."""
+"""Evaluate exact OE-PRE inputs with the pinned FHE Guidelines definitions under Sage."""
 
 import argparse
 from concurrent.futures import ProcessPoolExecutor
@@ -62,7 +62,7 @@ def worker(task):
     from sage.all import RealField, ZZ, oo
     ns = official_definitions(Path(path))
     rf = RealField(128)
-    # Use 128-bit sigma for oePRE; the Python float 3.19 for Table 5.2.
+    # Use 128-bit sigma for OE-PRE; the Python float 3.19 for Table 5.2.
     sigma = 3.19 if case["sigma_expression"] == "3.19" else rf(case["s_base"])/(2*rf.pi()).sqrt()
     params = ns["LWE"].Parameters(n=case["dimension"], q=ZZ(case["q"]),
                                  Xs=ns["MODE_TERNARY"], Xe=ns["ND"].DiscreteGaussian(sigma), m=oo)
@@ -147,7 +147,7 @@ def main():
     destination = args.output or ROOT / "results" / ("fhe_validation.json" if args.validation_only else "fhe_evaluation.json")
     if args.validation_only:
         require(destination.resolve() != (ROOT / "results/fhe_evaluation.json").resolve(),
-                "Validation-only output must not replace the oePRE result")
+                "Validation-only output must not replace the OE-PRE result")
     output = {"schema_version": 1, "record_type": "rerun_by_public_artifact",
               "execution": {"sage_version": SAGE_VERSION, "python_version": platform.python_version()},
               "dependencies": pins, "config_sha256_lf": sha_lf(args.config),
