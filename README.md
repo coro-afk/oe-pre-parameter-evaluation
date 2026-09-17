@@ -132,3 +132,12 @@ This artifact accompanies the OE-PRE manuscript and directly implements the fixe
 parameterization and conservative numerical formulas in Section 3.4 and Appendix C.
 The FHE evaluation uses the pinned official pipeline definitions. The MIT license
 applies to this artifact; external dependencies retain their upstream licenses.
+
+## AI-assisted development
+
+Generative AI tools (OpenAI ChatGPT) were used to assist with the
+implementation, documentation, and review of this reproducibility artifact.
+All parameter formulas, cryptographic assumptions, external dependencies,
+numerical outputs, and code used to support the reported results were reviewed
+and validated by the authors. The authors take full responsibility for the
+artifact and its results.
