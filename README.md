@@ -85,6 +85,10 @@ sage -python scripts/run_fhe_evaluation.py --validation-only --output external/t
   use exact integer exponents. The nonzero collision term is stored as an exact
   expression and a logarithm, and certified below the `2^-194` cap by
   integer arithmetic. The exact statistical sum with that cap is below `2^-130`.
+  The direct NEL-LWE reduction uses `delta_nel = 2*epsilon_nel/(1-epsilon_nel)^2`.
+  With `epsilon_nel = 2^-152`, the honest-user contribution is exactly
+  `2^-133/(1-2^-152)^2`, and the sampler contribution is at most `2^-132`.
+  Thus `Delta_stat <= 2^-133/(1-2^-152)^2 + 2^-132 + 2^-194 < 2^-130`.
 - `results/fhe_evaluation.json`: separate `table_5_2_validation` and
   `oepre_evaluation` sections, exact inputs, versions/source hashes, all four attack
   cost dictionaries and their original textual representations, plus clearly
@@ -130,6 +134,12 @@ benchmark the cryptosystem.
 
 This artifact accompanies the OE-PRE manuscript and directly implements the fixed
 parameterization and conservative numerical formulas in Section 3.4 and Appendix C.
+The statistical loss is synchronized with manuscript commit
+[`76223a0e7b091e2d40119727a834d3c747d2535b`](https://github.com/coro-afk/oe-pre/commit/76223a0e7b091e2d40119727a834d3c747d2535b),
+using the direct NEL-LWE reduction in Section 2.2 and the budget in Appendix C.1.
+This update preserves the Gaussian widths, moduli, correctness bounds and resource
+sizes. The exact lattice-estimator inputs are also unchanged, so the bundled FHE
+attack results remain applicable.
 The FHE evaluation uses the pinned official pipeline definitions. The MIT license
 applies to this artifact; external dependencies retain their upstream licenses.
 

@@ -101,7 +101,9 @@ def parameter_row(c, dimension):
     require(first == q, f"q is not the first admissible prime at its own w: d={dimension}")
 
     eps_exact = F(2)**c["epsilon_nel_log2"]
-    delta_nel = 4*eps_exact/(1-eps_exact)
+    # Direct NEL-LWE reduction (Section 2.2 / Appendix C.1): the GMPW20
+    # convolution bound charges only the real branch; the uniform branch is exact.
+    delta_nel = 2*eps_exact/(1-eps_exact)**2
     nel = c["query_caps"]["Q_Hon"]*delta_nel
     delta_samp = F(2)**c["delta_trunc_log2"]+F(2)**c["delta_disc_log2"]
     require(delta_samp <= F(2)**c["delta_samp_upper_log2"], "Sampler budget failed")
