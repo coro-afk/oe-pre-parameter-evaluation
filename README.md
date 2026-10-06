@@ -48,6 +48,12 @@ checked with Python 3.12.3.
   `a43a59356b6e87490091751bc48c523f924d5f9e`.
 - [lattice-estimator](https://github.com/malb/lattice-estimator/tree/8f1ff7e20a4d3391e3badff1d76825314db225bc):
   `8f1ff7e20a4d3391e3badff1d76825314db225bc`.
+- Supplementary [TabOg/mlwe-hybrids](https://github.com/TabOg/mlwe-hybrids/tree/a92f335665eef69927d2d8f49832bd595a6dac32):
+  `a92f335665eef69927d2d8f49832bd595a6dac32`, with
+  [PrimalHybrid/lattice_estimator](https://github.com/malb/lattice-estimator/tree/6019056011d10d7e9c30a0d5da2d2f729fbc2eec)
+  at `6019056011d10d7e9c30a0d5da2d2f729fbc2eec` and
+  [DualHybrid](https://github.com/TabOg/CodedDualAttack/tree/e2104ca50a293ed09b8fcec703cd2b143d21bee8)
+  at `e2104ca50a293ed09b8fcec703cd2b143d21bee8` (verified only).
 
 The Guidelines revision already pins that estimator as its `lattice-estimator`
 Git submodule. Bootstrap keeps this official layout at
@@ -116,6 +122,66 @@ margin above Category 128.
 `sigma=3.19`, and `q=2^26` / `2^27`. Its minima are 131.332683 / 126.193727,
 confirming the published largest integer `log2(q)=26` at Category 128.
 Those rows are not OE-PRE parameter sets.
+
+## Supplementary ring-aware sensitivity check
+
+[ePrint 2026/279](https://eprint.iacr.org/2026/279) motivates checking primal
+hybrids that exploit negacyclic rotations. The actual OE-PRE secret is iid uniform
+ternary; the authors' sparse workflow uses fixed-composition `SparseTernary`.
+This supplementary sensitivity check therefore uses balanced fixed-weight proxies
+at `floor(mu_H-2*sigma_H)`, the nearest integer to `mu_H`, and
+`ceil(mu_H+2*sigma_H)`, where `mu_H=2*d/3` and `sigma_H=sqrt(2*d/9)`.
+Each proxy fixes `p=floor(h/2)` positive and `m=h-p` negative entries. These are
+**fixed-composition proxy estimates, not exact iid-secret security levels**, a
+tail-security bound, an exhaustive attack survey, or end-to-end OE-HRA bit security.
+
+The runner reads the selected exact primes from `configs/paper_parameters.json`
+and uses `sigma=9/sqrt(2*pi)`, classical MATZOV costs and upstream GSA defaults.
+It calls the three documented rotated Babai variants: no MitM, estimator MitM,
+and square-root MitM, always with `poly_degree=d`. The ordinary family uses the
+same upstream estimator and proxy inputs with `deny_list=["arora-gb"]`.
+Only positive-`zeta` calls count as genuine rotated-primal attacks. In particular,
+the audited projected-CVP/no-MitM call selected `zeta=0` and follows the ordinary
+fallback; its costs are not reported as rotated-primal estimates.
+
+| d | h_typ | Ordinary min log2(rop) | Genuine rotated-primal min log2(rop) |
+|---:|---:|---:|---:|
+| 1024 | 683 | 128.322 | 172.283 |
+| 2048 | 1365 | 249.880 | 386.440 |
+| 4096 | 2731 | 507.919 | 832.207 |
+
+Within all nine proxies, genuine rotated-primal attacks do not become the limiting
+attack: the same-repository ordinary family is cheaper. Neither minimum falls below
+128 bits at any tested `d=1024` weight (`652`, `683`, `713`). The selected parameters
+and existing FHE-Guidelines results are unchanged. At `d=4096`, inherited
+high-dimensional search cutoffs limit the estimate; the returned finite costs
+remain comfortably above 256 bits, but their many decimal places do not express
+physical bit-security precision. BKW and uSVP return non-finite costs at those
+three weights; these are retained and excluded from minima.
+
+Optional reproduction, independent of the main workflow (same Sage 10.3 / Python
+3.11.11 environment):
+
+```sh
+bash scripts/bootstrap_ring_aware.sh
+sage -python scripts/run_ring_aware_evaluation.py
+```
+
+The bootstrap clones only the original authors' repository into ignored
+`external/mlwe-hybrids`, verifies its two recursive submodule pins, and refuses
+dirty sources or unexpected existing revisions. The runner imports upstream code
+unchanged, uses three workers by default (`--jobs 1` runs serially), and writes
+`results/ring_aware_2026_279.json`: all nine inputs, versions/pins, complete returned
+cost dictionaries (including attack dimensions, probabilities and repetitions),
+and derived minima. Audited minima are regression checks, never substitutes for
+recomputation; the absolute comparison tolerance is `1e-6` bits. A failed
+comparison writes `.failed.json`, returns a nonzero exit
+code and leaves any successful result unchanged.
+
+The specialised `DualHybrid` artifact is Kyber-specific and lacks the needed
+ternary-secret plus independent Gaussian-error interface. It is neither adapted
+nor evaluated on OE-PRE; ordinary lattice-estimator dual and dual-hybrid costs
+provide the comparison here.
 
 ## Scope
 
