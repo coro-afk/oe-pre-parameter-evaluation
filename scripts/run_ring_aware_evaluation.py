@@ -167,6 +167,9 @@ def summarize(row):
             for actual, reference in zip((ordinary, rotated), expected))
     if point["d"] == 1024:
         checks["both_minima_at_least_128"] = all(x["log2_rop_float"] >= 128 for x in (ordinary, rotated))
+    if point["d"] == 2048:
+        checks["both_minima_at_least_192"] = all(
+            x["log2_rop_float"] >= 192 for x in (ordinary, rotated))
     if point["d"] == 4096:
         checks["both_minima_above_256"] = all(x["log2_rop_float"] > 256 for x in (ordinary, rotated))
     summary["regression_checks"] = checks
